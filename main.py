@@ -5,12 +5,20 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
-# 设置模板目录
+# 目錄
 templates = Jinja2Templates(directory="templates")
 
-# 设置静态文件目录
+# 靜態文件目錄
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
+# 首頁
 @app.get("/")
 def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    return templates.TemplateResponse("index.html", {"request": request, "days": days})
+
+# 每日名單
+@app.get("/form/{day}")
+def read_form(request: Request, day: str):
+    return templates.TemplateResponse("form.html", {"request": request, "day": day})
