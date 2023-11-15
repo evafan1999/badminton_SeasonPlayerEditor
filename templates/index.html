@@ -19,7 +19,7 @@
     <!-- 使用 Bootstrap 的按鈕樣式 -->
     <div class="container text-center mt-3">
         {% for day in days %}
-            <button type="button" class="btn btn-outline-primary" onclick="openForm('{{ day|lower }}')">{{ day }}</button>
+            <button type="button" class="btn btn-outline-primary rounded-pill" onclick="openForm('{{ day|lower }}')" style="margin: 10px;">{{ day }}</button>
         {% endfor %}
     </div>
 

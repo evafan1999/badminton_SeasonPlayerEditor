@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Badminton Season Form for {{ day }}</title>
+    <title>Season Player List for {{ day }}</title>
     <!-- 引入 Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js"></script>
 </head>
 <body>
-    <h2>Badminton Season Form for {{ day }}</h2>
+    <h2>List for <mark>{{ day|upper }}</mark></h2>
 
     <!-- 顯示名單的表格 -->
     <table id="playerList">
