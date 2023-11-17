@@ -2,6 +2,7 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 from firebase_utils import initialize_firebase, read_firebase_data
 
 app = FastAPI()
@@ -33,4 +34,4 @@ def read_form(request: Request, day: str):
 def get_firebase_data():
     # 讀取資料
     firebase_data = read_firebase_data()
-    return {"firebase_data": firebase_data}
+    return JSONResponse(content={firebase_data: firebase_data})
