@@ -19,3 +19,10 @@ def read_firebase_data():
 
     # 回傳資料
     return data
+
+def write_firebase_data(data):
+    # 取得資料庫
+    ref = db.reference('/')
+
+    # 寫入資料
+    ref.set(data)       
