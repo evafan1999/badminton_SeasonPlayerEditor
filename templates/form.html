@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Season Player List for {{ day }}</title>
+    <!-- 引入 Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <h2>List for <mark>{{ day|upper }}</mark></h2>
+
+    <!-- 顯示名單的表格 -->
+    <table id="playerList">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>天</th>
+            </tr>
+        </thead>
+        <tbody id="playerListBody">
+            <!-- 這裡將顯示從 Firebase 獲取的名單 -->
+        </tbody>
+    </table>
+
+    <!-- 新增新成员的表單 -->
+    <form id="addPlayerForm">
+        <label for="name">姓名:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+
+        <label for="day">天:</label>
+        <input type="text" id="day" name="day" required>
+        <br>
+
+        <button id="save" type="button">儲存</button>
+    </form>
+
+    <!-- 引入外部 JavaScript 文件 -->
+    <script src="/SeasonPlayerEditor/form.js"></script>
+    <script>
+        $("#save").click(function() {
+            fetch(`https://http://127.0.0.1:8000/write?name=${$("#name").val()}&day=${$("#day").val()} `, {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: $("#name").val(),
+                    day: $("#day").val()
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+        });
+    </script>
+</body>
+</html>
