@@ -43,14 +43,9 @@
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="day-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         選擇天
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="day-toggle">
+                    <ul class="dropdown-menu" aria-labelledby="day-toggle" required>
                         <li><a class="dropdown-item" href="#" onclick="setDay('monday')">Monday</a></li>
                         <li><a class="dropdown-item" href="#" onclick="setDay('tuesday')">Tuesday</a></li>
-                        <!-- <li><a class="dropdown-item" href="#">Wednesday</a></li>
-                        <li><a class="dropdown-item" href="#">Thursday</a></li>
-                        <li><a class="dropdown-item" href="#">Friday</a></li>
-                        <li><a class="dropdown-item" href="#">Saturday</a></li>
-                        <li><a class="dropdown-item" href="#">Sunday</a></li> -->
                     </ul>
                 </div>
                 <!-- <input type="text" id="day" name="day" class="form-control" required> -->
@@ -61,7 +56,6 @@
     </div>
     
         <!-- 引入外部 JavaScript 文件 -->
-        <!-- <script src="/SeasonPlayerEditor/form.js"></script> -->
         <script>
             let day = '';
 
@@ -73,6 +67,18 @@
             $("#save").click(function() {
                 const name= $("#name").val();
                 console.log(name, day);
+
+                // 檢查必填欄位
+                if(!name) {
+                    alert("請輸入姓名")
+                    return;
+                }
+
+                if(!day) {
+                    alert("請選擇天")
+                    return;
+                }
+
                 fetch(`http://127.0.0.1:8000/write?name=${name}&day=${day}`, {
                     method: 'POST',
                     body: JSON.stringify({
