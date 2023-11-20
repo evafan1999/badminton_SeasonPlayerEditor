@@ -39,7 +39,7 @@ def get_firebase_data():
 
 # 寫入firebase
 @app.post("/write")
-def write(request: Request, name: str, day: int):
+def write(request: Request, name: str, day: str):
     # 讀取資料
     firebase_data = read_firebase_data()
     # 寫入資料

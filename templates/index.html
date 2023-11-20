@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
 
     </style>
@@ -30,31 +33,57 @@
         <div class="row mt-3">    
         <!-- 新增新成员的表單 -->
             <form id="addPlayerForm">
-                <label for="name">姓名:</label>
-                <input type="text" id="name" name="name" required>
+                <label for="name" class="form-label">姓名:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
                 <br>
         
-                <label for="day">天:</label>
-                <input type="text" id="day" name="day" required>
+                <label for="day" class="form-label">天:</label>
                 <br>
-        
-                <button id="save" type="button">儲存</button>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="day-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        選擇天
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="day-toggle" required>
+                        <li><a class="dropdown-item" href="#" onclick="setDay('monday')">Monday</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setDay('tuesday')">Tuesday</a></li>
+                    </ul>
+                </div>
+                <!-- <input type="text" id="day" name="day" class="form-control" required> -->
+                <br>
+                <button id="save" type="button" class="btn btn-primary">儲存</button>
             </form>
         </div>
     </div>
     
         <!-- 引入外部 JavaScript 文件 -->
-        <!-- <script src="/SeasonPlayerEditor/form.js"></script> -->
         <script>
+            let day = '';
+
+            function setDay(selectedDay) {
+                day = selectedDay;
+                document.getElementById('day-toggle').textContent = selectedDay;
+            }
+
             $("#save").click(function() {
-                const name= $("#name").val()
-                const day= $("#day").val()
-                console.log(name, day)
+                const name= $("#name").val();
+                console.log(name, day);
+
+                // 檢查必填欄位
+                if(!name) {
+                    alert("請輸入姓名")
+                    return;
+                }
+
+                if(!day) {
+                    alert("請選擇天")
+                    return;
+                }
+
                 fetch(`http://127.0.0.1:8000/write?name=${name}&day=${day}`, {
                     method: 'POST',
                     body: JSON.stringify({
                         name: $("#name").val(),
-                        day: $("#day").val()
+                        day: day
                     }),
                     headers: {
                         'Content-Type': 'application/json'
@@ -74,44 +103,41 @@
                     console.error('Error:', error);
                 });
             });
+            // JavaScript
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+            // 按鈕
+            const buttonContainer = document.getElementById('button-container');
+            days.forEach(day => {
+                const button = document.createElement('button');
+                button.setAttribute('type', 'button');
+                button.setAttribute('class', 'btn btn-outline-primary rounded-pill');
+                button.setAttribute('style', 'margin: 10px;');
+                button.textContent = day;
+                button.addEventListener('click', () => openForm(day.toLowerCase()));
+                buttonContainer.appendChild(button);
+            });
+
+            // 打開表單
+            function openForm(days) {
+                const formUrl = `/form/${days}`;
+                
+                fetch(formUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Network response was not ok (${response.status})`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        console.log(`Form content for ${days}:`, html);
+                        document.getElementById('form-container').innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching form:', error);
+                    });
+            }
         </script>
-
-    <script>
-        // JavaScript
-        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-        // 按鈕
-        const buttonContainer = document.getElementById('button-container');
-        days.forEach(day => {
-            const button = document.createElement('button');
-            button.setAttribute('type', 'button');
-            button.setAttribute('class', 'btn btn-outline-primary rounded-pill');
-            button.setAttribute('style', 'margin: 10px;');
-            button.textContent = day;
-            button.addEventListener('click', () => openForm(day.toLowerCase()));
-            buttonContainer.appendChild(button);
-        });
-
-        // 打開表單
-        function openForm(day) {
-            const formUrl = `/form/${day}`;
-            
-            fetch(formUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok (${response.status})`);
-                    }
-                    return response.text();
-                })
-                .then(html => {
-                    console.log(`Form content for ${day}:`, html);
-                    document.getElementById('form-container').innerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Error fetching form:', error);
-                });
-        }
-    </script>
 
     <!-- Add Bootstrap JavaScript and Popper.js -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
