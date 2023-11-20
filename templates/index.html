@@ -59,7 +59,20 @@
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                })
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok (${response.status})`);
+                    }
+                    return response.json();
+                }).then(data => {
+                    if(data.message === "success") {
+                        alert("新增成功")
+                    } else {
+                        alert("新增失敗")
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
             });
         </script>
 
