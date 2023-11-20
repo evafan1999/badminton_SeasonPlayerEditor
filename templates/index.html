@@ -25,37 +25,26 @@
             <div class="container text-center mt-3" id="button-container">
             <!-- 此處將用 JavaScript 動態生成按鈕 -->
             </div>
+        </div>
 
-        <div class="row mt-3">
-            <!-- 表單容器 -->
-        <div id="form-container" class="mt-3 ml-3"></div>
-        <table id="playerList">
-            <thead>
-                <tr>
-                    <th>姓名</th>
-                    <th>天</th>
-                </tr>
-            </thead>
-            <tbody id="playerListBody">
-                <!-- 這裡將顯示從 Firebase 獲取的名單 -->
-            </tbody>
-        </table>
-    
+        <div class="row mt-3">    
         <!-- 新增新成员的表單 -->
-        <form id="addPlayerForm">
-            <label for="name">姓名:</label>
-            <input type="text" id="name" name="name" required>
-            <br>
-    
-            <label for="day">天:</label>
-            <input type="text" id="day" name="day" required>
-            <br>
-    
-            <button id="save" type="button">儲存</button>
-        </form>
+            <form id="addPlayerForm">
+                <label for="name">姓名:</label>
+                <input type="text" id="name" name="name" required>
+                <br>
+        
+                <label for="day">天:</label>
+                <input type="text" id="day" name="day" required>
+                <br>
+        
+                <button id="save" type="button">儲存</button>
+            </form>
+        </div>
+    </div>
     
         <!-- 引入外部 JavaScript 文件 -->
-        <script src="/SeasonPlayerEditor/form.js"></script>
+        <!-- <script src="/SeasonPlayerEditor/form.js"></script> -->
         <script>
             $("#save").click(function() {
                 const name= $("#name").val()
@@ -73,9 +62,6 @@
                 })
             });
         </script>
-    </div>
-</div>
-        </div>
 
     <script>
         // JavaScript
@@ -121,7 +107,6 @@
 </body>
 <footer>
     <div class="container text-center mt-3">
-        <!-- 此處不再需要後端連結 -->
         <p>Powered by <a href="https://www.firebase.com/">Firebase</a></p>
     </div>
 </html>
