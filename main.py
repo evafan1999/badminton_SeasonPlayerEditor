@@ -27,7 +27,8 @@ def read_root(request: Request):
 # 每日名單
 @app.get("/form/{day}")
 def read_form(request: Request, day: str):
-    return templates.TemplateResponse("form.html", {"request": request, "day": day})
+    # return templates.TemplateResponse("form.html", {"request": request, "day": day})
+    return  read_firebase_data()
 
 # 資料庫欄位名稱
 @app.get("/firebase_data")
