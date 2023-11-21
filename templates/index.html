@@ -31,6 +31,14 @@
         <!-- 此處將用 JavaScript 動態生成按鈕 -->
 
         <div class="row mt-3">
+            <!-- 顯示名單 -->
+            <div class="container">
+                <h3 id="selected-day">Names for <span id="selected-day"></span>:</h3>
+                <ul id="names-list"></ul>
+            </div>
+        </div>
+
+        <div class="row mt-3">
             <!-- 新增新成员的表單 -->
             <form id="addPlayerForm">
                 <label for="name" class="form-label">姓名:</label>
@@ -57,12 +65,49 @@
 
     <!-- 引入外部 JavaScript 文件 -->
     <script>
+        // 產生星期鍵
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        // 按鈕
+        const buttonContainer = document.getElementById('button-container');
+        days.forEach(day => {
+            const button = document.createElement('button');
+            button.setAttribute('type', 'button');
+            button.setAttribute('class', 'btn btn-outline-primary rounded-pill');
+            button.setAttribute('style', 'margin: 10px;');
+            button.textContent = day;
+            button.addEventListener('click', () => openForm(day.toLowerCase()));
+            buttonContainer.appendChild(button);
+        });
+
+        //Names for "showSelectedDay"
+        // 假設有一個名為 showSelectedDay 的變數保存了當前選擇的星期
+        let showSelectedDay = " "; // 這裡是您實際獲取的當前選擇星期的代碼
+
+        function updateShowSelectedDay(day) {
+            showSelectedDay = day;
+
+            const showSelectedDayElement = document.getElementById('selected-day');
+
+            showSelectedDayElement.textContent = `Names for ${showSelectedDay}:`;
+        }
+
+        // 當按下其他星期鍵時，呼叫 updateSelectedDay() 並傳遞新的星期值
+        document.getElementById('button-container').addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON') {
+                updateShowSelectedDay(event.target.textContent);
+            }
+        });
+
+
+        // #day-toggle
         let day = '';
 
         function setDay(selectedDay) {
             day = selectedDay;
             document.getElementById('day-toggle').textContent = selectedDay;
         }
+
+        // 儲存按鈕
         $("#save").click(function () {
             const name = $("#name").val();
             console.log(name, day);
@@ -101,19 +146,7 @@
                 console.error('Error:', error);
             });
         });
-        // JavaScript
-        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-        // 按鈕
-        const buttonContainer = document.getElementById('button-container');
-        days.forEach(day => {
-            const button = document.createElement('button');
-            button.setAttribute('type', 'button');
-            button.setAttribute('class', 'btn btn-outline-primary rounded-pill');
-            button.setAttribute('style', 'margin: 10px;');
-            button.textContent = day;
-            button.addEventListener('click', () => openForm(day.toLowerCase()));
-            buttonContainer.appendChild(button);
-        });
+
         // 打開表單
         function openForm(days) {
             const formUrl = `/form/${days}`;
@@ -125,14 +158,16 @@
                     }
                     return response.text();
                 })
-                .then(html => {
-                    console.log(`Form content for ${days}:`, html);
-                    document.getElementById('form-container').innerHTML = html;
+                .then(data => {
+                    const formContainer = document.getElementById('form-container');
+                    formContainer.innerHTML = data;
                 })
                 .catch(error => {
-                    console.error('Error fetching form:', error);
+                    console.error('Error:', error);
                 });
         }
+
+
     </script>
 
     <!-- Add Bootstrap JavaScript and Popper.js -->

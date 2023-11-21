@@ -16,7 +16,21 @@ def initialize_firebase():
         },
     )
 
-
+def initialize_days_key():
+    # 取得資料庫
+    ref = db.reference("/days")
+    
+    #初始化星期鍵
+    ref.set({
+        "monday": [],
+        "tuesday": [],
+        "wednesday": [],
+        "thursday": [],
+        "friday": [],
+        "saturday": [],
+        "sunday": [],
+    })
+    
 def read_firebase_data():
     # 取得資料庫
     ref = db.reference("/")
