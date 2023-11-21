@@ -35,10 +35,28 @@ def read_root(request: Request):
 
 # 每日名單
 @app.get("/form/{day}")
-def read_form(request: Request, day: str):
-    # return templates.TemplateResponse("form.html", {"request": request, "day": day})
-    return read_firebase_data()
+def read_form(day: str, request: Request):
+    firebase_data = read_firebase_data()
+    names = firebase_data.get(day, {})
+    
+    days = {
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    }
 
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "days": days,
+            "selected_day": day,  # 用於標識選中的星期
+            "names": names if names else {},  # 將可能的空列表替換為空字典
+        })
 
 # 資料庫欄位名稱
 @app.get("/firebase_data")
