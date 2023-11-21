@@ -21,14 +21,24 @@ initialize_firebase()
 # 首頁
 @app.get("/")
 def read_root(request: Request):
-    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ]
     return templates.TemplateResponse("index.html", {"request": request, "days": days})
+
 
 # 每日名單
 @app.get("/form/{day}")
 def read_form(request: Request, day: str):
     # return templates.TemplateResponse("form.html", {"request": request, "day": day})
-    return  read_firebase_data()
+    return read_firebase_data()
+
 
 # 資料庫欄位名稱
 @app.get("/firebase_data")
@@ -36,6 +46,7 @@ def get_firebase_data():
     # 讀取資料
     firebase_data = read_firebase_data()
     return firebase_data
+
 
 # 寫入firebase
 @app.post("/write")
@@ -46,6 +57,6 @@ def write(request: Request, name: str, day: str):
     if name in firebase_data:
         firebase_data[name].append(day)
     else:
-        firebase_data[name]=[day]
+        firebase_data[name] = [day]
     write_firebase_data(firebase_data)
     return JSONResponse(status_code=200, content={"message": "success"})
