@@ -37,9 +37,9 @@ def read_root(request: Request):
 @app.get("/form/{day}")
 def read_form(day: str, request: Request):
     firebase_data = read_firebase_data()
-    names = firebase_data.get(day, {})
+    names = firebase_data.get(day, [])
     
-    days = {
+    days = [
         "Monday",
         "Tuesday",
         "Wednesday",
@@ -47,7 +47,7 @@ def read_form(day: str, request: Request):
         "Friday",
         "Saturday",
         "Sunday",
-    }
+    ]
 
     return templates.TemplateResponse(
         "index.html",
@@ -78,3 +78,10 @@ def write(request: Request, name: str, day: str):
         firebase_data[name] = [day]
     write_firebase_data(firebase_data)
     return JSONResponse(status_code=200, content={"message": "success"})
+
+# 資料庫中的姓名
+@app.get("/names")
+def get_names():
+    firebase_data = read_firebase_data()
+    names = list(firebase_data.keys())
+    return names
