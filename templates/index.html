@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,9 +12,7 @@
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <style>
-
-    </style>
+    <style></style>
 </head>
 
 <body>
@@ -29,6 +26,10 @@
         <!-- 使用 Bootstrap 的按鈕樣式 -->
         <div class="container text-center mt-3" id="button-container"></div>
         <!-- 此處將用 JavaScript 動態生成按鈕 -->
+
+        <div id="allNames">
+            <a href="/names" class="btn btn-primary">所有季打人員</a>
+        </div>
 
         <div class="row mt-3">
             <!-- 顯示名單 -->
@@ -104,7 +105,34 @@
                     namesList.appendChild(listItem);
                 });
             })
-            .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error:', error));
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const allNamesButton = document.querySelector("#allNames a");
+            const namesList = document.getElementById('namesList');
+
+            allNamesButton.addEventListener("click", function(event){
+                event.preventDefault(); // 阻止瀏覽器默認行為
+
+                // 切換 #namesList 的顯示狀態
+                if (namesList.style.display === "block") {
+                    namesList.style.display = "none"; // 隱藏
+                } else {
+                    namesList.style.display = "block"; // 顯示
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const namesList = document.getElementById('namesList');
+            if (window.location.pathname === '/names') {
+                namesList.style.display = 'block';
+            } else {
+                namesList.style.display = 'none';
+            }
+        });
+
+
 
         // 當按下其他星期鍵時，呼叫 updateSelectedDay() 並傳遞新的星期值
         document.getElementById('button-container').addEventListener('click', (event) => {
@@ -112,7 +140,6 @@
                 updateShowSelectedDay(event.target.textContent);
             }
         });
-
 
         // #day-toggle
         let day = '';
@@ -161,27 +188,6 @@
                 console.error('Error:', error);
             });
         });
-
-        // 打開表單
-        function openForm(days) {
-            const formUrl = `/form/${days}`;
-
-            fetch(formUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok (${response.status})`);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    const formContainer = document.getElementById('form-container');
-                    formContainer.innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
 
     </script>
 

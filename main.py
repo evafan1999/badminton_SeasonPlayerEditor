@@ -84,4 +84,4 @@ def write(request: Request, name: str, day: str):
 def get_names():
     firebase_data = read_firebase_data()
     names = list(firebase_data.keys())
-    return names
+    return {"names": names}
