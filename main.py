@@ -35,29 +35,7 @@ def read_root(request: Request):
 
 
 # 每日名單
-@app.get("/form/{day}")
-def read_form(day: str, request: Request):
-    firebase_data = read_firebase_data()
-    names = firebase_data.get(day, [])
-    
-    days = [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-    ]
 
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "days": days,
-            "selected_day": day,  # 用於標識選中的星期
-            "names": names if names else {},  # 將可能的空列表替換為空字典
-        })
 
 # 資料庫欄位名稱
 @app.get("/firebase_data")
@@ -77,6 +55,17 @@ def write(request: Request, name: str, day: str):
         firebase_data[name].append(day)
     else:
         firebase_data[name] = [day]
+    write_firebase_data(firebase_data)
+    return JSONResponse(status_code=200, content={"message": "success"})
+
+# 刪除firebase
+@app.post("/deletePlayer")
+def delete(request: Request, name: str):
+    # 讀取資料
+    firebase_data = read_firebase_data()
+    # 刪除資料
+    if name in firebase_data:
+        del firebase_data[name]
     write_firebase_data(firebase_data)
     return JSONResponse(status_code=200, content={"message": "success"})
 
