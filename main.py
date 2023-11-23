@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from firebase_utils import initialize_firebase, read_firebase_data, write_firebase_data
+from typing import List
 
 app = FastAPI()
 
@@ -85,3 +86,10 @@ def get_names():
     firebase_data = read_firebase_data()
     names = list(firebase_data.keys())
     return {"names": names}
+
+# 取得指定星期名單的路由
+@app.get("/names/{day}")
+def get_names_by_day(day: str) -> List[str]:
+    firebase_data = read_firebase_data()
+    names_for_day = [name for name, schedule in firebase_data.items() if isinstance(schedule, list) and day in schedule]
+    return names_for_day

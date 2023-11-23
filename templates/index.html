@@ -1,68 +1,77 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Season Player Editor</title>
-    <!-- Add Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Season Player Editor</title>
+        <!-- Add Bootstrap CSS -->
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+        <!-- Bootstrap Bundle with Popper -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <style></style>
-</head>
+        <style></style>
+    </head>
 
-<body>
-    <div class="container text-center mt-3">
-        <a href="/" style="text-decoration: none; color: inherit;">
-            <h1>Season Player Editor</h1>
-        </a>
-    </div>
-
-    <div class="container mt-3>">
-        <!-- 使用 Bootstrap 的按鈕樣式 -->
-        <div class="container text-center mt-3" id="button-container"></div>
-        <!-- 此處將用 JavaScript 動態生成按鈕 -->
-
-        <div id="allNames">
-            <a href="/names" class="btn btn-primary">所有季打人員</a>
+    <body>
+        <div class="container text-center mt-3">
+            <a href="/" style="text-decoration: none; color: inherit;">
+                <h1>Season Player Editor</h1>
+            </a>
         </div>
 
-        <div class="row mt-3">
-            <!-- 顯示名單 -->
-            <div id="namesList"></div>
+        <div class="container mt-3>">
+            <!-- 使用 Bootstrap 的按鈕樣式 -->
+            <div class="container text-center mt-3" id="button-container"></div>
+            <!-- 此處將用 JavaScript 動態生成按鈕 -->
+
+            <div id="allNames">
+                <a href="/names" class="btn btn-primary">所有季打人員</a>
+            </div>
+
+            <div class="col">
+                <!-- 顯示所有季打名單 -->
+                <div id="namesList"></div>
+                <!-- 顯示指定星期的名單 -->
+                <div id="namesListByDay"></div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- 新增新成员的表單 -->
+                <form id="addPlayerForm">
+                    <label for="name" class="form-label">姓名:</label>
+                    <input type="text" id="name" name="name"
+                        class="form-control" required>
+                    <br>
+                    <label for="day" class="form-label">天:</label>
+                    <br>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle"
+                            type="button" id="day-toggle"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            選擇天
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="day-toggle"
+                            required>
+                            <li><a class="dropdown-item" href="#"
+                                    onclick="setDay('monday')">Monday</a></li>
+                            <li><a class="dropdown-item" href="#"
+                                    onclick="setDay('tuesday')">Tuesday</a></li>
+                        </ul>
+                    </div>
+                    <br>
+                    <button id="save" type="button" class="btn btn-primary">儲存</button>
+                </form>
+            </div>
         </div>
 
-        <div class="row mt-3">
-            <!-- 新增新成员的表單 -->
-            <form id="addPlayerForm">
-                <label for="name" class="form-label">姓名:</label>
-                <input type="text" id="name" name="name" class="form-control" required>
-                <br>
-                <label for="day" class="form-label">天:</label>
-                <br>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="day-toggle"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        選擇天
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="day-toggle" required>
-                        <li><a class="dropdown-item" href="#" onclick="setDay('monday')">Monday</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="setDay('tuesday')">Tuesday</a></li>
-                    </ul>
-                </div>
-                <!-- <input type="text" id="day" name="day" class="form-control" required> -->
-                <br>
-                <button id="save" type="button" class="btn btn-primary">儲存</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 引入外部 JavaScript 文件 -->
-    <script>
+        <!-- 引入外部 JavaScript 文件 -->
+        <script>
         // 產生星期鍵
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
         // 按鈕
@@ -73,21 +82,9 @@
             button.setAttribute('class', 'btn btn-outline-primary rounded-pill');
             button.setAttribute('style', 'margin: 10px;');
             button.textContent = day;
-            button.addEventListener('click', () => openForm(day.toLowerCase()));
+            button.addEventListener('click', () => fetchNamesByDay(day.toLowerCase()));
             buttonContainer.appendChild(button);
         });
-
-        //Names for "showSelectedDay"
-        // 假設有一個名為 showSelectedDay 的變數保存了當前選擇的星期
-        let showSelectedDay = " "; // 這裡是您實際獲取的當前選擇星期的代碼
-
-        function updateShowSelectedDay(day) {
-            showSelectedDay = day;
-
-            const showSelectedDayElement = document.getElementById('selected-day');
-
-            showSelectedDayElement.textContent = `Names for ${showSelectedDay}:`;
-        }
 
         // 顯示所有姓名
         // 使用 AJAX 從 /names 路由獲取名字列表
@@ -132,14 +129,24 @@
             }
         });
 
+        // 顯示指定星期的名單
+        function fetchNamesByDay(day) {
+            fetch(`/names/${day}`)
+                .then(response => response.json())
+                .then(data => {
+                    const namesList = document.getElementById('namesListByDay');
+                    const names = data;
 
-
-        // 當按下其他星期鍵時，呼叫 updateSelectedDay() 並傳遞新的星期值
-        document.getElementById('button-container').addEventListener('click', (event) => {
-            if (event.target.tagName === 'BUTTON') {
-                updateShowSelectedDay(event.target.textContent);
-            }
-        });
+                    // 在網頁上顯示名字列表
+                    namesList.innerHTML = `<h2>Names for ${day}</h2>`;
+                    names.forEach(name => {
+                        const listItem = document.createElement('p');
+                        listItem.textContent = name;
+                        namesList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
 
         // #day-toggle
         let day = '';
@@ -191,14 +198,16 @@
 
     </script>
 
-    <!-- Add Bootstrap JavaScript and Popper.js -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
-<footer>
-    <div class="container text-center mt-3">
-        <p>Powered by <a href="https://www.firebase.com/">Firebase</a></p>
-    </div>
+        <!-- Add Bootstrap JavaScript and Popper.js -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </body>
+    <footer>
+        <div class="container text-center mt-3">
+            <p>Powered by <a href="https://www.firebase.com/">Firebase</a></p>
+        </div>
 
-</html>
+    </html>
