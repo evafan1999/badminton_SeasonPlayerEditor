@@ -25,20 +25,23 @@
             </a>
         </div>
 
-        <div class="container mt-3>">
-            <!-- 使用 Bootstrap 的按鈕樣式 -->
-            <div class="container text-center mt-3" id="button-container"></div>
-            <!-- 此處將用 JavaScript 動態生成按鈕 -->
+        <div class="container">
 
-            <div id="allNames">
-                <a href="/names" class="btn btn-primary">所有季打人員</a>
-            </div>
+            <div class="row">
+                <!-- 使用 Bootstrap 的按鈕樣式 -->
+                <div class="container text-center mt-3" id="button-container"></div>
+                <!-- 此處將用 JavaScript 動態生成按鈕 -->
 
-            <div class="col">
-                <!-- 顯示所有季打名單 -->
-                <div id="namesList"></div>
-                <!-- 顯示指定星期的名單 -->
-                <div id="namesListByDay"></div>
+                <div class="container" id="allNames">
+                    <a href="/names" class="btn btn-primary">所有季打人員</a>
+                    <!-- 顯示所有季打名單 -->
+                    <div class="row">
+                        <div class="col" id="namesList"></div>
+                        <!-- 顯示指定星期的名單 -->
+                        <div class="col" id="namesListByDay"></div>
+                    </div>
+                </div>
+
             </div>
 
             <div class="row mt-3">
@@ -95,7 +98,7 @@
                 const names = data.names;
 
                 // 在網頁上顯示名字列表
-                namesList.innerHTML = '<h2>Names</h2>';
+                namesList.innerHTML = '<h4>Names</h4>';
                 names.forEach(name => {
                     const listItem = document.createElement('p');
                     listItem.textContent = name;
@@ -138,7 +141,7 @@
                     const names = data;
 
                     // 在網頁上顯示名字列表
-                    namesList.innerHTML = `<h2>Names for ${day}</h2>`;
+                    namesList.innerHTML = `<h4>Names for ${day}</h4>`;
                     names.forEach(name => {
                         const listItem = document.createElement('p');
                         listItem.textContent = name;
