@@ -1,80 +1,89 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Season Player Editor</title>
-        <!-- Add Bootstrap CSS -->
-        <link rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-            crossorigin="anonymous"></script>
-        <!-- Bootstrap Bundle with Popper -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Season Player Editor</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-        <style></style>
-    </head>
+    <!--引用 styles.css-->
+    <link rel="stylesheet" href="/static/styles.css">
 
-    <body>
-        <div class="container text-center mt-3">
-            <a href="/" style="text-decoration: none; color: inherit;">
-                <h1>Season Player Editor</h1>
-            </a>
-        </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <div class="container">
+    <style></style>
+</head>
 
-            <div class="row">
-                <!-- 使用 Bootstrap 的按鈕樣式 -->
-                <div class="container text-center mt-3" id="button-container"></div>
-                <!-- 此處將用 JavaScript 動態生成按鈕 -->
+<body>
+    <div class="container text-center mt-3">
+        <a href="/" style="text-decoration: none; color: inherit;">
+            <h1>Season Player Editor</h1>
+        </a>
+    </div>
 
-                <div class="container" id="allNames">
-                    <a href="/names" class="btn btn-primary">所有季打人員</a>
+    <div class="container">
+
+        <div class="row">
+            <!-- 使用 Bootstrap 的按鈕樣式 -->
+            <div class="container text-center mt-3" id="button-container"></div>
+            <!-- 此處將用 JavaScript 動態生成按鈕 -->
+
+            <div class="container" id="allNames">
+                <a href="/names" class="btn btn-primary" id="namesListBtn">顯示所有季打人員</a>
+                <div class="container">
                     <!-- 顯示所有季打名單 -->
-                    <div class="row">
-                        <div class="col" id="namesList"></div>
-                        <!-- 顯示指定星期的名單 -->
-                        <div class="col" id="namesListByDay"></div>
-                    </div>
+                    <table class="table table-striped" id="namesListTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="namesListTableBody">
+                            <!-- Table body will be dynamically populated here -->
+                        </tbody>
+                    </table>
+
+                    <!-- <div class="col" id="namesList"></div> -->
+                    <!-- 顯示指定星期的名單 -->
+                    <div class="col" id="namesListByDay"></div>
                 </div>
-
             </div>
 
-            <div class="row mt-3">
-                <!-- 新增新成员的表單 -->
-                <form id="addPlayerForm">
-                    <label for="name" class="form-label">姓名:</label>
-                    <input type="text" id="name" name="name"
-                        class="form-control" required>
-                    <br>
-                    <label for="day" class="form-label">天:</label>
-                    <br>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle"
-                            type="button" id="day-toggle"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            選擇天
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="day-toggle"
-                            required>
-                            <li><a class="dropdown-item" href="#"
-                                    onclick="setDay('monday')">Monday</a></li>
-                            <li><a class="dropdown-item" href="#"
-                                    onclick="setDay('tuesday')">Tuesday</a></li>
-                        </ul>
-                    </div>
-                    <br>
-                    <button id="save" type="button" class="btn btn-primary">儲存</button>
-                </form>
-            </div>
         </div>
 
-        <!-- 引入外部 JavaScript 文件 -->
-        <script>
+        <div class="row mt-3">
+            <!-- 新增新成员的表單 -->
+            <form id="addPlayerForm">
+                <label for="name" class="form-label">姓名:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+                <br>
+                <label for="day" class="form-label">天:</label>
+                <br>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="day-toggle"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        選擇天
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="day-toggle" required>
+                        <li><a class="dropdown-item" href="#" onclick="setDay('monday')">Monday</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setDay('tuesday')">Tuesday</a></li>
+                    </ul>
+                </div>
+                <br>
+                <button id="save" type="button" class="btn btn-primary">儲存</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 引入外部 JavaScript 文件 -->
+    <script>
         // 產生星期鍵
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
         // 按鈕
@@ -94,43 +103,92 @@
         fetch('/names')
             .then(response => response.json())
             .then(data => {
-                const namesList = document.getElementById('namesList');
+                const namesListTableBody = document.getElementById('namesListTableBody');
                 const names = data.names;
 
-                // 在網頁上顯示名字列表
-                namesList.innerHTML = '<h4>Names</h4>';
-                names.forEach(name => {
-                    const listItem = document.createElement('p');
-                    listItem.textContent = name;
-                    namesList.appendChild(listItem);
+                // 清空表格內容
+                namesListTableBody.innerHTML = '';
+
+                // 填充表格行
+                names.forEach((name, index) => {
+                    const row = document.createElement('tr');
+
+                    // 列數
+                    const rowIndex = document.createElement('th');
+                    rowIndex.setAttribute('scope', 'row');
+                    rowIndex.textContent = index + 1;
+
+                    // 名字
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = name;
+
+                    // 刪除按鈕
+                    const deleteCell = document.createElement('td');
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.setAttribute('class', 'btn btn-outline-secondary');
+                    deleteButton.addEventListener('click', function(event) {
+                        event.preventDefault();
+
+                        const row = event.target.closest('tr');
+                        if (row) {
+                            const name = row.querySelector('td').textContent;
+                            console.log(name);
+                            // 向後端發送刪除請求
+                            fetch('/deletePlayer',{
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    name: name
+                                }),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.message === "success") {
+                                    // 刪除成功的操作，例如從表格中刪除該行
+                                    row.remove();
+                                    alert("刪除成功")
+                                } else {
+                                    alert("刪除失敗")
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                        }
+
+                    });
+
+
+                    deleteCell.appendChild(deleteButton);
+
+                    // 在表格行中添加列
+                    row.appendChild(rowIndex);
+                    row.appendChild(nameCell);
+                    row.appendChild(deleteCell);
+
+                    // 將整個表格行添加到表格主體中
+                    namesListTableBody.appendChild(row);
                 });
             })
-        .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error:', error));
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const allNamesButton = document.querySelector("#allNames a");
-            const namesList = document.getElementById('namesList');
+        document.getElementById('namesListBtn').addEventListener('click', function(event) {
+            event.preventDefault();
 
-            allNamesButton.addEventListener("click", function(event){
-                event.preventDefault(); // 阻止瀏覽器默認行為
+            const namesListTable = document.getElementById('namesListTable');
+            const namesListBtn = document.getElementById('namesListBtn');
 
-                // 切換 #namesList 的顯示狀態
-                if (namesList.style.display === "block") {
-                    namesList.style.display = "none"; // 隱藏
-                } else {
-                    namesList.style.display = "block"; // 顯示
-                }
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const namesList = document.getElementById('namesList');
-            if (window.location.pathname === '/names') {
-                namesList.style.display = 'block';
+            // 切換顯示/隱藏
+            if (namesListTable.style.display === 'none') {
+                namesListTable.style.display = 'block';
+                namesListBtn.textContent = '隱藏所有季打人員';
             } else {
-                namesList.style.display = 'none';
+                namesListTable.style.display = 'none';
+                namesListBtn.textContent = '顯示所有季打人員';
             }
         });
+
 
         // 顯示指定星期的名單
         function fetchNamesByDay(day) {
@@ -142,9 +200,9 @@
 
                     // 在網頁上顯示名字列表
                     namesList.innerHTML = `<h4>Names for ${day}</h4>`;
-                    names.forEach(name => {
+                    names.forEach((name, index) => {
                         const listItem = document.createElement('p');
-                        listItem.textContent = name;
+                        listItem.textContent = `${index + 1}. ${name}`; // 加上編號
                         namesList.appendChild(listItem);
                     });
                 })
@@ -201,16 +259,15 @@
 
     </script>
 
-        <!-- Add Bootstrap JavaScript and Popper.js -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script
-            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    </body>
-    <footer>
-        <div class="container text-center mt-3">
-            <p>Powered by <a href="https://www.firebase.com/">Firebase</a></p>
-        </div>
+    <!-- Add Bootstrap JavaScript and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+<footer>
+    <div class="container text-center mt-3">
+        <p>Powered by <a href="https://www.firebase.com/">Firebase</a></p>
+    </div>
+</footer>
 
-    </html>
+</html>
