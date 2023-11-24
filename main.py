@@ -60,7 +60,8 @@ def write(request: Request, name: str, day: str):
 
 # 刪除firebase
 @app.post("/deletePlayer")
-def delete(request: Request, name: str):
+def delete(request: Request, params: dict):
+    name = params["name"]
     # 讀取資料
     firebase_data = read_firebase_data()
     # 刪除資料
