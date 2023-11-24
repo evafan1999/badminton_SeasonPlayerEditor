@@ -23,70 +23,70 @@
     </head>
 
     <body>
-        <div class="container text-center mt-3">
+        <div class="container text-center" style="margin-top: 25px;">
             <a href="/" style="text-decoration: none; color: inherit;">
                 <h1>Season Player Editor</h1>
             </a>
+            <!-- 使用 Bootstrap 的按鈕樣式 -->
+            <div class="container text-center" id="button-container">
+                <a href="/names" class="btn btn-primary rounded-pill"
+                    id="namesListBtn">顯示所有季打人員</a>
+            </div>
+            <!-- 此處將用 JavaScript 動態生成按鈕 -->
         </div>
 
         <div class="container">
-
             <div class="row">
-                <!-- 使用 Bootstrap 的按鈕樣式 -->
-                <div class="container text-center mt-3" id="button-container"></div>
-                <!-- 此處將用 JavaScript 動態生成按鈕 -->
+                <div class="col-md-4">
+                    <!-- 顯示所有季打名單 -->
+                    <table class="table table-striped table-sm"
+                        id="namesListTable"
+                        style="display: none;">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="namesListTableBody">
+                            <!-- Table body will be dynamically populated here -->
+                        </tbody>
+                    </table>
 
-                <div class="container" id="allNames">
-                    <a href="/names" class="btn btn-primary" id="namesListBtn">顯示所有季打人員</a>
-                    <div class="container">
-                        <!-- 顯示所有季打名單 -->
-                        <table class="table table-striped" id="namesListTable"
-                            style="display: none;">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody id="namesListTableBody">
-                                <!-- Table body will be dynamically populated here -->
-                            </tbody>
-                        </table>
-
-                        <!-- <div class="col" id="namesList"></div> -->
-                        <!-- 顯示指定星期的名單 -->
-                        <div class="col" id="namesListByDay"></div>
-                    </div>
+                    <!-- <div class="col" id="namesList"></div> -->
+                    <!-- 顯示指定星期的名單 -->
+                    <div class="col" id="namesListByDay"></div>
                 </div>
-
+                <div class="col-md-4"></div>
+                <div class="col-md-4"></div>
             </div>
+        </div>
 
-            <div class="row mt-3">
-                <!-- 新增新成员的表單 -->
-                <form id="addPlayerForm">
-                    <label for="name" class="form-label">姓名:</label>
-                    <input type="text" id="name" name="name"
-                        class="form-control" required>
-                    <br>
-                    <label for="day" class="form-label">天:</label>
-                    <br>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle"
-                            type="button" id="day-toggle"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            選擇天
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="day-toggle"
-                            required>
-                            <li><a class="dropdown-item setday" href="#">Monday</a></li>
-                            <li><a class="dropdown-item setday" href="#">Tuesday</a></li>
-                        </ul>
-                    </div>
-                    <br>
-                    <button id="save" type="button" class="btn btn-primary">儲存</button>
-                </form>
-            </div>
+        <div class="container">
+            <!-- 新增新成员的表單 -->
+            <form id="addPlayerForm" class="col-md-3">
+                <label for="name" class="form-label">姓名:</label>
+                <input type="text" id="name" name="name"
+                    class="form-control" required>
+                <br>
+                <label for="day" class="form-label">天:</label>
+                <br>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle"
+                        type="button" id="day-toggle"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        選擇天
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="day-toggle"
+                        required>
+                        <li><a class="dropdown-item setday" href="#">Monday</a></li>
+                        <li><a class="dropdown-item setday" href="#">Tuesday</a></li>
+                    </ul>
+                </div>
+                <br>
+                <button id="save" type="button" class="btn btn-primary">儲存</button>
+            </form>
         </div>
 
         <!-- 引入外部 JavaScript 文件 -->
@@ -123,11 +123,13 @@
                     // 列數
                     const rowIndex = document.createElement('th');
                     rowIndex.setAttribute('scope', 'row');
+                    rowIndex.setAttribute('class', 'text-center align-middle');
                     rowIndex.textContent = index + 1;
 
                     // 名字
                     const nameCell = document.createElement('td');
                     nameCell.textContent = name;
+                    nameCell.setAttribute('class', 'text-center align-middle');
 
                     // 刪除按鈕
                     const deleteCell = document.createElement('td');
