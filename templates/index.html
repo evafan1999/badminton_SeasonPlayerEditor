@@ -19,7 +19,11 @@
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <style></style>
+        <style>
+            .hidden {
+                display: none;
+            }
+        </style>
     </head>
 
     <body>
@@ -29,19 +33,18 @@
             </a>
             <!-- 使用 Bootstrap 的按鈕樣式 -->
             <div class="container text-center" id="button-container">
-                <a href="/names" class="btn btn-primary rounded-pill"
-                    id="namesListBtn">顯示所有季打人員</a>
+                <button type="button" class="btn btn-primary rounded-pill"
+                    style="margin: 10px;" id="namesListBtn">顯示所有季打人員</button>
             </div>
-            <!-- 此處將用 JavaScript 動態生成按鈕 -->
+            <!-- 用 JavaScript 動態生成按鈕 -->
         </div>
 
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
                     <!-- 顯示所有季打名單 -->
-                    <table class="table table-striped table-sm"
-                        id="namesListTable"
-                        style="display: none;">
+                    <table class="table table-striped table-sm hidden"
+                        id="namesListTable">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -53,12 +56,24 @@
                             <!-- Table body will be dynamically populated here -->
                         </tbody>
                     </table>
-
-                    <!-- <div class="col" id="namesList"></div> -->
-                    <!-- 顯示指定星期的名單 -->
-                    <div class="col" id="namesListByDay"></div>
                 </div>
-                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <!--顯示指定星期表格，並提供新增、刪除功能-->
+                    <table class="table table-striped table-sm hidden"
+                        id="namesListByDay">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Delete</th>
+                                <th scope="col">Save</th>
+                            </tr>
+                        </thead>
+                        <tbody id="namesListByDayBody">
+                            <!-- Table body will be dynamically populated here -->
+                        </tbody>
+                    </table>                        
+                </div>
                 <div class="col-md-4"></div>
             </div>
         </div>
@@ -98,107 +113,116 @@
         days.forEach(day => {
             const button = document.createElement('button');
             button.setAttribute('type', 'button');
-            button.setAttribute('class', 'btn btn-outline-primary rounded-pill');
+            button.setAttribute('class', 'btn btn-outline-primary rounded-pill day-btn');
             button.setAttribute('style', 'margin: 10px;');
             button.textContent = day;
             button.addEventListener('click', () => fetchNamesByDay(day.toLowerCase()));
             buttonContainer.appendChild(button);
         });
 
-        // 顯示所有姓名
-        // 使用 AJAX 從 /names 路由獲取名字列表
-        fetch('/names')
-            .then(response => response.json())
-            .then(data => {
-                const namesListTableBody = document.getElementById('namesListTableBody');
-                const names = data.names;
-
-                // 清空表格內容
-                namesListTableBody.innerHTML = '';
-
-                // 填充表格行
-                names.forEach((name, index) => {
-                    const row = document.createElement('tr');
-
-                    // 列數
-                    const rowIndex = document.createElement('th');
-                    rowIndex.setAttribute('scope', 'row');
-                    rowIndex.setAttribute('class', 'text-center align-middle');
-                    rowIndex.textContent = index + 1;
-
-                    // 名字
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = name;
-                    nameCell.setAttribute('class', 'text-center align-middle');
-
-                    // 刪除按鈕
-                    const deleteCell = document.createElement('td');
-                    const deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Delete';
-                    deleteButton.setAttribute('class', 'btn btn-outline-secondary');
-                    deleteButton.addEventListener('click', function(event) {
-                        event.preventDefault();
-
-                        const row = event.target.closest('tr');
-                        if (row) {
-                            const name = row.querySelector('td').textContent;
-                            console.log(name);
-                            // 向後端發送刪除請求
-                            fetch('/deletePlayer',{
-                                method: 'POST',
-                                body: JSON.stringify({
-                                    name: name
-                                }),
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.message === "success") {
-                                    // 刪除成功的操作，例如從表格中刪除該行
-                                    row.remove();
-                                    alert("刪除成功")
-                                    reloadNamesList();
-                                } else {
-                                    alert("刪除失敗")
-                                }
-                            })
-                            .catch(error => console.error('Error:', error));
-                        }
-
-                    });
-
-
-                    deleteCell.appendChild(deleteButton);
-
-                    // 在表格行中添加列
-                    row.appendChild(rowIndex);
-                    row.appendChild(nameCell);
-                    row.appendChild(deleteCell);
-
-                    // 將整個表格行添加到表格主體中
-                    namesListTableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error('Error:', error));
-
-        document.getElementById('namesListBtn').addEventListener('click', function(event) {
-            event.preventDefault();
-
-            const namesListTable = document.getElementById('namesListTable');
-            const namesListBtn = document.getElementById('namesListBtn');
-
-            // 切換顯示/隱藏
-            if (namesListTable.style.display === 'none') {
-                namesListTable.style.display = 'block';
-                namesListBtn.textContent = '隱藏所有季打人員';
-            } else {
-                namesListTable.style.display = 'none';
-                namesListBtn.textContent = '顯示所有季打人員';
+        $('#namesListBtn').click(function() {
+            // 當按鈕名稱為「顯示所有季打人員」時，顯示所有季打人員
+            // 當按鈕名稱為「隱藏所有季打人員」時，隱藏所有季打人員 
+            if ($('#namesListBtn').text() === '顯示所有季打人員') {
+                loadingNamesList();
+                return;
+            }else{
+                $('#namesListTable').addClass('hidden'); // 隱藏表格
+                $('#namesListBtn').text('顯示所有季打人員');
             }
         });
 
+        // 按下day-btn時，顯示指定星期的名單
+        $('.day-btn').click(function() {
+            const selectedDay = $(this).text();
+            fetchNamesByDay(selectedDay.toLowerCase());
+        });
+
+        // 顯示所有姓名
+        // 使用 AJAX 從 /names 路由獲取名字列表
+        function loadingNamesList() {
+            fetch('/names')
+                .then(response => response.json())
+                .then(data => {
+                    const namesListTableBody = document.getElementById('namesListTableBody');
+                    const names = data.names;
+
+                    // 清空表格內容
+                    namesListTableBody.innerHTML = '';
+
+                    // 填充表格行
+                    names.forEach((name, index) => {
+                        const row = document.createElement('tr');
+
+                        // 列數
+                        const rowIndex = document.createElement('th');
+                        rowIndex.setAttribute('scope', 'row');
+                        rowIndex.setAttribute('class', 'text-center align-middle');
+                        rowIndex.textContent = index + 1;
+
+                        // 名字
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = name;
+                        nameCell.setAttribute('class', 'text-center align-middle');
+
+                        // 刪除按鈕
+                        const deleteCell = document.createElement('td');
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.setAttribute('class', 'btn btn-outline-secondary');
+                        deleteButton.addEventListener('click', function(event) {
+                            event.preventDefault();
+
+                            const row = event.target.closest('tr');
+                            if (row) {
+                                const name = row.querySelector('td').textContent;
+                                console.log(name);
+                                // 向後端發送刪除請求
+                                fetch('/deletePlayer',{
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                        name: name
+                                    }),
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.message === "success") {
+                                        // 刪除成功的操作，例如從表格中刪除該行
+                                        row.remove();
+                                        alert("刪除成功")
+                                        reloadNamesList();
+                                    } else {
+                                        alert("刪除失敗")
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                            }
+
+                        });
+
+
+                        deleteCell.appendChild(deleteButton);
+
+                        // 在表格行中添加列
+                        row.appendChild(rowIndex);
+                        row.appendChild(nameCell);
+                        row.appendChild(deleteCell);
+
+                        // 將整個表格行添加到表格主體中
+                        namesListTableBody.appendChild(row);
+                        $('#namesListTable').removeClass('hidden'); // 顯示表格
+                        // 將按鈕名稱改為「隱藏所有季打人員」
+                        $('#namesListBtn').text('隱藏所有季打人員');
+
+
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+            }
+    
 
         // 顯示指定星期的名單
         function fetchNamesByDay(day) {
@@ -207,16 +231,121 @@
                 .then(data => {
                     const namesList = document.getElementById('namesListByDay');
                     const names = data;
+                    console.log(names);
 
                     // 在網頁上顯示名字列表
-                    namesList.innerHTML = `<h4>Names for ${day}</h4>`;
+                    const namesListByDayBody = document.getElementById('namesListByDayBody');
+
+                    // 清空表格內容
+                    namesListByDayBody.innerHTML = '';
+
+                    // 填充表格行
                     names.forEach((name, index) => {
-                        const listItem = document.createElement('p');
-                        listItem.textContent = `${index + 1}. ${name}`; // 加上編號
-                        namesList.appendChild(listItem);
-                    });
+                        const row = document.createElement('tr');
+
+                        // 列數
+                        const rowIndex = document.createElement('th');
+                        rowIndex.setAttribute('scope', 'row');
+                        rowIndex.setAttribute('class', 'text-center align-middle');
+                        rowIndex.textContent = index + 1;
+
+                        // 名字
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = name;
+                        nameCell.setAttribute('class', 'text-center align-middle');
+
+                        // 刪除按鈕
+                        const deleteCell = document.createElement('td');
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.setAttribute('class', 'btn btn-outline-secondary');
+                        deleteButton.addEventListener('click', function(event) {
+                            event.preventDefault();
+
+                            const row = event.target.closest('tr');
+                            if (row) {
+                                const name = row.querySelector('td').textContent;
+                                console.log(name);
+                                // 向後端發送刪除請求
+                                fetch('/deletePlayer',{
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                        name: name
+                                    }),
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.message === "success") {
+                                        // 刪除成功的操作，例如從表格中刪除該行
+                                        row.remove();
+                                        alert("刪除成功")
+                                        reloadNamesList();
+                                    } else {
+                                        alert("刪除失敗")
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                            }
+
+                        });
+
+                        deleteCell.appendChild(deleteButton);
+
+                        // 儲存按鈕
+                        const saveCell = document.createElement('td');
+                        const saveButton = document.createElement('button');
+                        saveButton.textContent = 'Save';
+                        saveButton.setAttribute('class', 'btn btn-secondary');
+                        saveButton.addEventListener('click', function(event) {
+                            event.preventDefault();
+
+                            const row = event.target.closest('tr');
+                            if (row) {
+                                const name = row.querySelector('td').textContent;
+                                console.log(name);
+                                // 向後端發送刪除請求
+                                fetch('/deletePlayer',{
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                        name: name
+                                    }),
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.message === "success") {
+                                        // 刪除成功的操作，例如從表格中刪除該行
+                                        row.remove();
+                                        alert("刪除成功")
+                                        reloadNamesList();
+                                    } else {
+                                        alert("刪除失敗")
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                            }
+
+                        });
+                        saveCell.appendChild(saveButton);
+
+                        // 在表格行中添加列
+                        row.appendChild(rowIndex);
+                        row.appendChild(nameCell);
+                        row.appendChild(deleteCell);
+                        row.appendChild(saveCell);
+
+                        // 將整個表格行添加到表格主體中
+                        namesListByDayBody.appendChild(row);
+                        $('#namesListByDay').removeClass('hidden'); // 顯示表格
+
                 })
-                .catch(error => console.error('Error:', error));
+                // .catch(error => console.error('Error:', error));
+            });
         }
 
         // #day-toggle

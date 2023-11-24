@@ -36,7 +36,6 @@ def read_root(request: Request):
 
 # 每日名單
 
-
 # 資料庫欄位名稱
 @app.get("/firebase_data")
 def get_firebase_data():
@@ -81,5 +80,7 @@ def get_names():
 @app.get("/names/{day}")
 def get_names_by_day(day: str) -> List[str]:
     firebase_data = read_firebase_data()
+    print(firebase_data) #{'fff': ['Tuesday'], 'qq': ['monday'], 'vv': ['Monday'], 'ww': ['monday'], 'xx': ['Monday'], '小王': 550, '耿Z': ['monday']}
+    # 將schedule變成小寫
     names_for_day = [name for name, schedule in firebase_data.items() if isinstance(schedule, list) and day in schedule]
     return names_for_day
